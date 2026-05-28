@@ -1,7 +1,7 @@
 -- WARNING: This schema is for context only and is not meant to be run.
 -- Table order and constraints may not be valid for execution.
 
-CREATE TABLE public.ai_plans (
+CREATE TABLE tsagmergen.ai_plans (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   plan_date date NOT NULL,
@@ -12,19 +12,19 @@ CREATE TABLE public.ai_plans (
   ai_message text,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT ai_plans_pkey PRIMARY KEY (id),
-  CONSTRAINT ai_plans_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.students(id)
+  CONSTRAINT ai_plans_user_id_fkey FOREIGN KEY (user_id) REFERENCES tsagmergen.students(id)
 );
-CREATE TABLE public.classes (
+CREATE TABLE tsagmergen.classes (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   grade integer NOT NULL,
   class_section text NOT NULL CHECK (class_section = ANY (ARRAY['A'::text, 'B'::text])),
-  class_name text DEFAULT ((grade)::text || class_section),
+  class_name text,
   created_at timestamp with time zone DEFAULT now(),
   school_id uuid,
   CONSTRAINT classes_pkey PRIMARY KEY (id),
-  CONSTRAINT classes_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.schools(id)
+  CONSTRAINT classes_school_id_fkey FOREIGN KEY (school_id) REFERENCES tsagmergen.schools(id)
 );
-CREATE TABLE public.grade_events (
+CREATE TABLE tsagmergen.grade_events (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   grade_level integer NOT NULL,
   class_section text,
@@ -36,9 +36,9 @@ CREATE TABLE public.grade_events (
   created_at timestamp with time zone DEFAULT now(),
   school_id uuid,
   CONSTRAINT grade_events_pkey PRIMARY KEY (id),
-  CONSTRAINT grade_events_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.schools(id)
+  CONSTRAINT grade_events_school_id_fkey FOREIGN KEY (school_id) REFERENCES tsagmergen.schools(id)
 );
-CREATE TABLE public.homework (
+CREATE TABLE tsagmergen.homework (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   subject text NOT NULL,
@@ -51,9 +51,9 @@ CREATE TABLE public.homework (
   status text DEFAULT 'pending'::text,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT homework_pkey PRIMARY KEY (id),
-  CONSTRAINT homework_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.students(id)
+  CONSTRAINT homework_user_id_fkey FOREIGN KEY (user_id) REFERENCES tsagmergen.students(id)
 );
-CREATE TABLE public.questions (
+CREATE TABLE tsagmergen.questions (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   question_order integer NOT NULL,
   question_text text NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE public.questions (
   format text,
   CONSTRAINT questions_pkey PRIMARY KEY (id)
 );
-CREATE TABLE public.schedules (
+CREATE TABLE tsagmergen.schedules (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   class_id uuid NOT NULL,
   day_of_week integer NOT NULL,
@@ -73,16 +73,16 @@ CREATE TABLE public.schedules (
   end_time time without time zone NOT NULL,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT schedules_pkey PRIMARY KEY (id),
-  CONSTRAINT schedules_class_id_fkey FOREIGN KEY (class_id) REFERENCES public.classes(id)
+  CONSTRAINT schedules_class_id_fkey FOREIGN KEY (class_id) REFERENCES tsagmergen.classes(id)
 );
-CREATE TABLE public.schools (
+CREATE TABLE tsagmergen.schools (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   name text NOT NULL,
   city text,
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT schools_pkey PRIMARY KEY (id)
 );
-CREATE TABLE public.students (
+CREATE TABLE tsagmergen.students (
   id uuid NOT NULL,
   username text NOT NULL,
   school_id uuid NOT NULL,
@@ -91,9 +91,9 @@ CREATE TABLE public.students (
   created_at timestamp with time zone DEFAULT now(),
   CONSTRAINT students_pkey PRIMARY KEY (id),
   CONSTRAINT students_id_fkey FOREIGN KEY (id) REFERENCES auth.users(id),
-  CONSTRAINT students_school_id_fkey FOREIGN KEY (school_id) REFERENCES public.schools(id)
+  CONSTRAINT students_school_id_fkey FOREIGN KEY (school_id) REFERENCES tsagmergen.schools(id)
 );
-CREATE TABLE public.user_profiles (
+CREATE TABLE tsagmergen.user_profiles (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL UNIQUE,
   learning_style text,
@@ -105,5 +105,5 @@ CREATE TABLE public.user_profiles (
   home_arrival_time time without time zone,
   sleep_time time without time zone,
   CONSTRAINT user_profiles_pkey PRIMARY KEY (id),
-  CONSTRAINT user_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.students(id)
+  CONSTRAINT user_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES tsagmergen.students(id)
 );
