@@ -1,10 +1,21 @@
 import './auth.css'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, type InputHTMLAttributes } from 'react'
 import { supabase } from '../../lib/supabase'
 
 
 type Mode = 'signin' | 'signup'
 interface School { id: string; name: string; city: string | null }
+
+type FieldProps = { label: string; fieldClassName?: string } & InputHTMLAttributes<HTMLInputElement>
+
+function Field({ label, fieldClassName = 'auth-field', className = '', ...props }: FieldProps) {
+  return (
+    <div className={fieldClassName}>
+      <label className="auth-label">{label}</label>
+      <input className={`auth-input ${className}`.trim()} {...props} />
+    </div>
+  )
+}
 
 
 export default function AuthForm() {
@@ -97,26 +108,14 @@ export default function AuthForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <div className="auth-field">
-            <label className="auth-label">Имэйл</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@email.com" required className="auth-input" />
-          </div>
+          <Field label="Имэйл" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="example@email.com" required />
 
-          <div className="auth-field">
-            <label className="auth-label">Нууц үг</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Нууц үгээ оруулна уу" required className="auth-input" />
-          </div>
+          <Field label="Нууц үг" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Нууц үгээ оруулна уу" required />
 
           {mode === 'signup' && <>
-            <div className="auth-field">
-              <label className="auth-label">Нууц үг давтах</label>
-              <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Дахин нууц үгээ оруулна уу" required className="auth-input" />
-            </div>
+            <Field label="Нууц үг давтах" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="Дахин нууц үгээ оруулна уу" required />
 
-            <div className="auth-field">
-              <label className="auth-label">Нэр</label>
-              <input type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Таны нэр" required className="auth-input" />
-            </div>
+            <Field label="Нэр" type="text" value={username} onChange={e => setUsername(e.target.value)} placeholder="Таны нэр" required />
 
             <div className="auth-field auth-school-field">
               <label className="auth-label">Сургууль</label>
@@ -141,14 +140,8 @@ export default function AuthForm() {
             </div>
 
             <div className="auth-row">
-              <div className="auth-field auth-field-half">
-                <label className="auth-label">Анги</label>
-                <input type="number" min={1} max={12} value={grade} onChange={e => setGrade(e.target.value)} placeholder="1-12" required className="auth-input" />
-              </div>
-              <div className="auth-field auth-field-half">
-                <label className="auth-label">Бүлэг</label>
-                <input type="text" value={classSection} onChange={e => setClassSection(e.target.value.toUpperCase())} placeholder="A, B, C..." required maxLength={2} className="auth-input auth-input-uppercase" />
-              </div>
+              <Field label="Анги" fieldClassName="auth-field auth-field-half" type="number" min={1} max={12} value={grade} onChange={e => setGrade(e.target.value)} placeholder="1-12" required />
+              <Field label="Бүлэг" fieldClassName="auth-field auth-field-half" className="auth-input-uppercase" type="text" value={classSection} onChange={e => setClassSection(e.target.value.toUpperCase())} placeholder="A, B, C..." required maxLength={2} />
             </div>
           </>}
 

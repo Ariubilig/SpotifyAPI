@@ -7,20 +7,13 @@ interface Question {
   question_order: number
   question_text: string
   category: string
+  sub_category: string | null
   options: string[] | { label: string; value: string }[]
 }
 
 interface QuestionsProps {
   user: { id: string }
   onComplete: () => void
-}
-interface Question {
-  id: string
-  question_order: number
-  question_text: string
-  category: string
-  sub_category: string | null   // add this
-  options: string[] | { label: string; value: string }[]
 }
 
 const stressMap: Record<string, string> = { very_low: 'high', low: 'medium', medium: 'low', high: 'very_low' }
@@ -141,7 +134,6 @@ export default function Questions({ user, onComplete }: QuestionsProps) {
                   className={`q-option ${currentAnswer === opt.value ? 'q-option-selected' : ''}`}
                   onClick={() => handleSelect(opt.value)}
                 >
-                  {currentAnswer === opt.value}
                   {opt.label}
                 </button>
               ))}

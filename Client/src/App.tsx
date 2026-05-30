@@ -1,12 +1,10 @@
-import { Routes, Route, Navigate, useNavigate  } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './components/auth/AuthProvider'
 import AuthForm from './components/auth/AuthForm'
 import Questions from './components/UI/question/question'
 import DailyPlanPage from './components/pages/DailyPlanPage'
 
-
 function AppRoutes() {
-
   const { user, loading, signOut } = useAuth()
   const navigate = useNavigate()
 
@@ -25,16 +23,12 @@ function AppRoutes() {
       <Route path="*"          element={<Navigate to={user ? '/plan' : '/auth'} replace />} />
     </Routes>
   )
-  
 }
 
 export default function App() {
-
-
   return (
     <AuthProvider>
       <AppRoutes />
     </AuthProvider>
   )
-
 }

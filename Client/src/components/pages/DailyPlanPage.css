@@ -167,12 +167,6 @@ body {
   font-family: "Lora", serif;
 }
 
-.loading-text {
-  color: var(--ink-soft);
-  font-style: italic;
-  font-family: "Lora", serif;
-}
-
 .plan-section {
   display: flex;
   flex-direction: column;
