@@ -1,0 +1,5 @@
+-- Placeholder for a migration that was already applied to the shared remote
+-- project (project ref kgjdvzuprtvlxfitljln) before this repo tracked it.
+-- Intentionally empty: its objects already exist remotely, so `supabase db push`
+-- skips it (the version is present in the remote migration history). This file
+-- only exists so the local migration history lines up with the remote one.

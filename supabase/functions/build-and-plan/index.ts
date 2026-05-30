@@ -33,7 +33,9 @@ serve(async (req) => {
     if (!user_id || !plan_date) return json({ error: "Missing user_id or plan_date" }, 400);
     if (!OPENAI_API_KEY)         return json({ error: "OPENAI_API_KEY not set" }, 500);
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      db: { schema: "tsagmergen" },
+    });
 
     // ── 1. Resolve user → school, grade, class_section ──────────────────
     const { data: studentRow, error: studentErr } = await supabase
