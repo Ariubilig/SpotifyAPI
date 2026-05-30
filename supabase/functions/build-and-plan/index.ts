@@ -1,9 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SUPABASE_URL     = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_KEY     = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const OPENAI_API_KEY   = Deno.env.get("OPENAI_API_KEY")!;
+const SUPABASE_URL       = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_KEY       = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY")!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,7 +31,7 @@ serve(async (req) => {
   try {
     const { user_id, plan_date } = await req.json();
     if (!user_id || !plan_date) return json({ error: "Missing user_id or plan_date" }, 400);
-    if (!OPENAI_API_KEY)         return json({ error: "OPENAI_API_KEY not set" }, 500);
+    if (!OPENROUTER_API_KEY)     return json({ error: "OPENROUTER_API_KEY not set" }, 500);
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
       db: { schema: "tsagmergen" },
@@ -143,11 +143,11 @@ serve(async (req) => {
     }`;
 
     // ── 5. Call OpenAI ──────────────────────────────────────────────────
-    const aiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
-      headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${OPENROUTER_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "openai/gpt-4o-mini",
         temperature: 0.4,
         response_format: { type: "json_object" },
         messages: [
@@ -157,7 +157,7 @@ serve(async (req) => {
       }),
     });
 
-    if (!aiRes.ok) return json({ error: "OpenAI request failed", detail: await aiRes.text() }, 502);
+    if (!aiRes.ok) return json({ error: "OpenRouter request failed", detail: await aiRes.text() }, 502);
 
     const rawContent: string = (await aiRes.json()).choices?.[0]?.message?.content ?? "";
 
